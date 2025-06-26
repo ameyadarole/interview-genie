@@ -152,19 +152,13 @@ if job_description.strip() and resume_text.strip():
 
         
         class PDF(FPDF):
-            # def header(self):
-            #     self.image("genie.jpg", 10, 8, 20)  # adjust path & size
-            #     self.set_font("Arial", 'B', 14)
-            #     self.cell(0, 10, "Interview Genie Assessment Report", ln=True, align="C")
-            #     self.ln(10)
-
             def __init__(self):
                  super().__init__()
                  self.first_page = True  # Track if it's the first page
 
             def header(self):
                 if self.first_page:
-                    self.image("D:/GenAI/interview_genie/genie.jpg", 10, 8, 20)  # Adjust as needed
+                    self.image("genie.jpg", 10, 8, 20)  # Adjust as needed
                     self.set_font("Arial", 'B', 14)
                     self.cell(0, 10, "Interview Genie Assessment Report", ln=True, align="C")
                     self.ln(10)
