@@ -1,21 +1,26 @@
+# ===============================
+# 🤖 INTERVIEW GENIE STREAMLIT APP
+# ===============================
+
+# --- 1. IMPORT LIBRARIES ---
+
 import streamlit as st
 import hmac
 import pdfplumber
 import google.generativeai as genai
 
-# --- Initialize logout state ---
+# --- 2. INITIALIZE LOGOUT STATE ---
 if "logout_triggered" not in st.session_state:
     st.session_state["logout_triggered"] = False
 
-# --- Page Config ---
+# --- 3. STREAMLIT PAGE CONFIG ---
 st.set_page_config(page_title="Interview Genie Login", page_icon="🧞", layout="centered")
 
-# --- Authenticate Gemini ---
+# --- 4. CONFIGURE GEMINI API ---
 genai.configure(api_key=st.secrets["google"]["api_key"])
 gemini_model = genai.GenerativeModel("models/gemini-2.0-flash")
 
-# --- Password Protection ---
-
+# --- 5. USER LOGIN FUNCTION ---
 def check_password():
     def login_form():
         st.image("genie.jpg", width=200)
@@ -53,13 +58,14 @@ def check_password():
 
     return False
 
+# --- 6. AUTHENTICATION CHECK ---
 if not check_password():
     st.stop()
 
-# --- Welcome ---
+# --- 7. APP WELCOME SECTION ---
 st.success("✅ Login successful! The genie is ready to help you crack your interviews.")
 
-# --- Input Section ---
+# --- 8. INPUT: JOB DESCRIPTION & RESUME ---
 st.markdown("## 📄 Paste or Upload Your Resume & Job Description")
 
 job_description = st.text_area("📝 Paste the Job Description here", height=250)
@@ -86,6 +92,7 @@ if upload_option == "📎 Upload PDF":
 else:
     resume_text = st.text_area("✍️ Paste your Resume content here", height=250)
 
+# --- 9. SKILL GAP ASSESSMENT ---
 if job_description.strip() and resume_text.strip():
     st.success("✅ Both Job Description and Resume received.")
 
@@ -202,6 +209,7 @@ if job_description.strip() and resume_text.strip():
                 href = f'<a href="data:application/pdf;base64,{base64_pdf}" download="Skill_Gap_Report.pdf">📥 Download Skill Gap Report (PDF)</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
+# --- 10. FOLLOW-UP CHAT WITH GEMINI ---
 # 🧠 Follow-up chat with Gemini
 st.markdown("##### 💬 Ask Gemini anything about this job or your resume:")
 
@@ -235,6 +243,7 @@ if user_query:
 else:
     st.info("📥 Please provide both Job Description and Resume to continue.")
 
+# --- 11. LOGOUT SECTION ---
 st.markdown("---")
 st.markdown("### 🔒 End of Session")
 
