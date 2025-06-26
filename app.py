@@ -15,7 +15,7 @@ gemini_model = genai.GenerativeModel("models/gemini-2.0-flash")
 def check_password():
 
     def login_form():
-        st.image("D:/GenAI/interview_genie/genie.jpg", width=200)
+        st.image("genie.jpg", width=200)
         st.markdown("### 🔐 Welcome to Interview Genie")
         st.markdown("Enter your credentials to unlock personalized interview prep magic!")
 
