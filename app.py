@@ -3,6 +3,10 @@ import hmac
 import pdfplumber
 import google.generativeai as genai
 
+# --- Initialize logout state ---
+if "logout_triggered" not in st.session_state:
+    st.session_state["logout_triggered"] = False
+
 # --- Page Config ---
 st.set_page_config(page_title="Interview Genie Login", page_icon="🧞", layout="centered")
 
@@ -12,8 +16,38 @@ gemini_model = genai.GenerativeModel("models/gemini-2.0-flash")
 
 # --- Password Protection ---
 
-def check_password():
+# def check_password():
 
+#     def login_form():
+#         st.image("genie.jpg", width=200)
+#         st.markdown("### 🔐 Welcome to Interview Genie")
+#         st.markdown("Enter your credentials to unlock personalized interview prep magic!")
+
+#         with st.form("Credentials"):
+#             st.text_input("👤 Username", key="username")
+#             st.text_input("🔑 Password", type="password", key="password")
+#             st.form_submit_button("✨ Log in", on_click=password_entered)
+
+#     def password_entered():
+#         if st.session_state["username"] in st.secrets["passwords"] and hmac.compare_digest(
+#             st.session_state["password"],
+#             st.secrets.passwords[st.session_state["username"]],
+#         ):
+#             st.session_state["password_correct"] = True
+#             del st.session_state["password"]
+#             del st.session_state["username"]
+#         else:
+#             st.session_state["password_correct"] = False
+
+#     if st.session_state.get("password_correct", False):
+#         return True
+
+#     login_form()
+#     if "password_correct" in st.session_state:
+#         st.error("😕 User not known or password incorrect")
+#     return False
+
+def check_password():
     def login_form():
         st.image("genie.jpg", width=200)
         st.markdown("### 🔐 Welcome to Interview Genie")
@@ -25,9 +59,9 @@ def check_password():
             st.form_submit_button("✨ Log in", on_click=password_entered)
 
     def password_entered():
-        if st.session_state["username"] in st.secrets["passwords"] and hmac.compare_digest(
-            st.session_state["password"],
-            st.secrets.passwords[st.session_state["username"]],
+        if st.session_state.get("username") in st.secrets["passwords"] and hmac.compare_digest(
+            st.session_state.get("password", ""),
+            st.secrets["passwords"][st.session_state["username"]],
         ):
             st.session_state["password_correct"] = True
             del st.session_state["password"]
@@ -35,12 +69,19 @@ def check_password():
         else:
             st.session_state["password_correct"] = False
 
+    # ✅ Show logout message once after session reset
+    if st.session_state.get("logout_success"):
+        st.success("✅ Logout successful!")
+        del st.session_state["logout_success"]
+
     if st.session_state.get("password_correct", False):
         return True
 
     login_form()
-    if "password_correct" in st.session_state:
+
+    if "password_correct" in st.session_state and not st.session_state["password_correct"]:
         st.error("😕 User not known or password incorrect")
+
     return False
 
 if not check_password():
@@ -239,3 +280,14 @@ if user_query:
 
 else:
     st.info("📥 Please provide both Job Description and Resume to continue.")
+
+st.markdown("---")
+st.markdown("### 🔒 End of Session")
+
+if st.button("🚪 Logout"):
+    # Clear session state
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.session_state["logout_success"] = True
+    st.rerun()
+
