@@ -16,37 +16,6 @@ gemini_model = genai.GenerativeModel("models/gemini-2.0-flash")
 
 # --- Password Protection ---
 
-# def check_password():
-
-#     def login_form():
-#         st.image("genie.jpg", width=200)
-#         st.markdown("### 🔐 Welcome to Interview Genie")
-#         st.markdown("Enter your credentials to unlock personalized interview prep magic!")
-
-#         with st.form("Credentials"):
-#             st.text_input("👤 Username", key="username")
-#             st.text_input("🔑 Password", type="password", key="password")
-#             st.form_submit_button("✨ Log in", on_click=password_entered)
-
-#     def password_entered():
-#         if st.session_state["username"] in st.secrets["passwords"] and hmac.compare_digest(
-#             st.session_state["password"],
-#             st.secrets.passwords[st.session_state["username"]],
-#         ):
-#             st.session_state["password_correct"] = True
-#             del st.session_state["password"]
-#             del st.session_state["username"]
-#         else:
-#             st.session_state["password_correct"] = False
-
-#     if st.session_state.get("password_correct", False):
-#         return True
-
-#     login_form()
-#     if "password_correct" in st.session_state:
-#         st.error("😕 User not known or password incorrect")
-#     return False
-
 def check_password():
     def login_form():
         st.image("genie.jpg", width=200)
@@ -99,18 +68,6 @@ st.markdown("### 📌 Provide Your Resume")
 upload_option = st.radio("Choose input method for your resume:", ("📎 Upload PDF", "✍️ Paste Text"))
 
 resume_text = ""
-
-# if upload_option == "📎 Upload PDF":
-#     uploaded_file = st.file_uploader("Upload your Resume (PDF only)", type=["pdf"])
-#     if uploaded_file is None:
-#         st.warning("📂 Please upload a PDF resume to proceed.")
-#     else:
-#         with pdfplumber.open(stream=uploaded_file.read(), filetype="pdf") as doc:
-#             resume_text = "\n".join(page.get_text() for page in doc)
-#         st.success("📄 Resume text extracted from PDF.")
-#         st.text_area("🧾 Extracted Resume Text", resume_text, height=250)
-# else:
-#     resume_text = st.text_area("✍️ Paste your Resume content here", height=250)
 
 if upload_option == "📎 Upload PDF":
     uploaded_file = st.file_uploader("Upload your Resume (PDF only)", type=["pdf"])
@@ -245,8 +202,6 @@ if job_description.strip() and resume_text.strip():
                 href = f'<a href="data:application/pdf;base64,{base64_pdf}" download="Skill_Gap_Report.pdf">📥 Download Skill Gap Report (PDF)</a>'
                 st.markdown(href, unsafe_allow_html=True)
 
-
-
 # 🧠 Follow-up chat with Gemini
 st.markdown("##### 💬 Ask Gemini anything about this job or your resume:")
 
@@ -276,7 +231,6 @@ if user_query:
         )
         with st.chat_message("ai"):
             st.markdown(followup.text)
-
 
 else:
     st.info("📥 Please provide both Job Description and Resume to continue.")
