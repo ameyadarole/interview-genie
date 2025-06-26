@@ -153,7 +153,7 @@ if job_description.strip() and resume_text.strip():
         
         class PDF(FPDF):
             # def header(self):
-            #     self.image("D:/GenAI/interview_genie/genie.jpg", 10, 8, 20)  # adjust path & size
+            #     self.image("genie.jpg", 10, 8, 20)  # adjust path & size
             #     self.set_font("Arial", 'B', 14)
             #     self.cell(0, 10, "Interview Genie Assessment Report", ln=True, align="C")
             #     self.ln(10)
