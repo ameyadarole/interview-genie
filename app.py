@@ -1,6 +1,6 @@
 import streamlit as st
 import hmac
-import fitz  # PyMuPDF for reading PDFs
+import pdfplumber
 import google.generativeai as genai
 
 # --- Page Config ---
@@ -59,15 +59,32 @@ upload_option = st.radio("Choose input method for your resume:", ("📎 Upload P
 
 resume_text = ""
 
+# if upload_option == "📎 Upload PDF":
+#     uploaded_file = st.file_uploader("Upload your Resume (PDF only)", type=["pdf"])
+#     if uploaded_file is None:
+#         st.warning("📂 Please upload a PDF resume to proceed.")
+#     else:
+#         with pdfplumber.open(stream=uploaded_file.read(), filetype="pdf") as doc:
+#             resume_text = "\n".join(page.get_text() for page in doc)
+#         st.success("📄 Resume text extracted from PDF.")
+#         st.text_area("🧾 Extracted Resume Text", resume_text, height=250)
+# else:
+#     resume_text = st.text_area("✍️ Paste your Resume content here", height=250)
+
 if upload_option == "📎 Upload PDF":
     uploaded_file = st.file_uploader("Upload your Resume (PDF only)", type=["pdf"])
     if uploaded_file is None:
         st.warning("📂 Please upload a PDF resume to proceed.")
     else:
-        with fitz.open(stream=uploaded_file.read(), filetype="pdf") as doc:
-            resume_text = "\n".join(page.get_text() for page in doc)
-        st.success("📄 Resume text extracted from PDF.")
-        st.text_area("🧾 Extracted Resume Text", resume_text, height=250)
+        try:
+            with pdfplumber.open(uploaded_file) as pdf:
+                resume_text = "\n".join(
+                    page.extract_text() for page in pdf.pages if page.extract_text()
+                )
+            st.success("📄 Resume text extracted from PDF.")
+            st.text_area("🧾 Extracted Resume Text", resume_text, height=250)
+        except Exception as e:
+            st.error(f"❌ Error reading PDF: {e}")
 else:
     resume_text = st.text_area("✍️ Paste your Resume content here", height=250)
 
